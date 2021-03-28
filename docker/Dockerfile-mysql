@@ -1,0 +1,20 @@
+FROM mariadb/server:10.4
+
+ARG ENVIRONMENT
+
+RUN if [ "$ENVIRONMENT" != "production" ]; then \
+apt-get update && apt-get install -y wget unzip && \
+# Download the database dump to load at the start of the Docker image (zip file)
+wget --quiet --output-document /docker-entrypoint-initdb.d/dump.zip "http://db.tec2.cortex-quizz.local:8080/cortex-quizz_dump.zip" && \
+# Extract the file (can be removed if a SQL file is downloaded directly)
+cd /docker-entrypoint-initdb.d && \
+unzip dump.zip && \
+rm -f dump.zip && \
+# Give permissions to be able to execute the SQL file
+chmod 777 /docker-entrypoint-initdb.d/* ; \
+fi
+
+ENTRYPOINT ["docker-entrypoint.sh"]
+
+EXPOSE 3306
+CMD ["mysqld"]

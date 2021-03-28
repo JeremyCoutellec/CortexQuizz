@@ -1,3 +1,7 @@
 #index:
 #    path: /
 #    controller: App\Controller\DefaultController::index
+
+quizzController:
+    path: /quizz
+    controller: App\Controller\QuizzController::cq_quizz_get_all
